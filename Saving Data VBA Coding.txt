@@ -1,0 +1,138 @@
+Option Explicit
+
+Sub Button2_Click()
+
+  Dim rng As Range
+  Dim i As Long
+  Dim a As Long
+  Dim rng_dest As Range
+  Dim rng_dest2 As Range
+
+  Application.ScreenUpdating = False
+  
+  'Check if Data # is found on sheet "Data Store"
+  
+  i = 1
+  
+  Do Until Sheets("Data Store").Range("A" & i).Value = ""
+  
+    If Sheets("Data Store").Range("A" & i).Value = Sheets("Weekly Report").Range("D10").Value Then
+    
+      'Ask overwrite Data #?
+      
+      If MsgBox("Overwrite the existing data?", vbYesNo) = vbNo Then
+      
+        Exit Sub
+        
+      Else
+        
+        Exit Do
+        
+      End If
+      
+    End If
+     
+    i = i + 1
+  
+  Loop
+  
+
+  i = 1
+
+  Set rng_dest = Sheets("Data Store").Range("A:K")
+  
+  Set rng_dest2 = Sheets("Monthly Report").Range("C6:I6")
+  
+  'Delete rows if Data # is found
+  
+  Do Until Sheets("Data Store").Range("A" & i).Value = ""
+  
+    If Sheets("Data Store").Range("A" & i).Value = Sheets("Weekly Report").Range("D10").Value Then
+    
+      Sheets("Data Store").Range("A" & i).EntireRow.Delete
+      
+      i = 1
+      
+    End If
+    
+    i = i + 1
+    
+  Loop
+  
+  
+  
+  ' Find first empty row in columns A:K on sheet Data Store
+
+  Do Until WorksheetFunction.CountA(rng_dest.Rows(i)) = 0
+
+    i = i + 1
+
+  Loop
+
+  'Copy range  on sheet Weekly Report
+
+  Set rng = Sheets("Weekly Report").Range("D7:J21")
+
+  ' Copy rows containing values to sheet Invoice data
+
+ For a = 1 To rng.Rows.Count
+
+    If WorksheetFunction.CountA(rng.Rows(a)) <> 0 Then
+
+      rng_dest.Rows(i).Value = rng.Rows(a).Value
+      rng_dest2.Rows(i).Value = rng.Rows(a).Value
+      
+
+      'Copy No.of cases
+
+      'Sheets("Data Store").Range("A" & i).Value = Sheets("Weekly Report").Range("D7").Value
+
+      'Copy Reason of A/I
+
+      'Sheets("Data Store").Range("B" & i).Value = Sheets("Weekly Report").Range("E$7").Value
+
+      'Copy Y/N
+
+      'Sheets("Data Store").Range("C" & i).Value = Sheets("Weekly Report").Range("F$7").Value
+       
+       
+      'Copy Week Number
+
+      Sheets("Data Store").Range("H" & i).Value = Sheets("Weekly Report").Range("G3").Value
+      
+      
+      'Copy Month
+
+      Sheets("Data Store").Range("I" & i).Value = Sheets("Weekly Report").Range("G4").Value
+      Sheets("Monthly Report").Range("F3").Value = Sheets("Weekly Report").Range("G4").Value
+      
+      'Copy Year
+
+      Sheets("Data Store").Range("J" & i).Value = Sheets("Weekly Report").Range("B5").Value
+      Sheets("Monthly Report").Range("F4").Value = Sheets("Weekly Report").Range("B5").Value
+      
+      'Copy Report Entry date
+
+      Sheets("Data Store").Range("K" & i).Value = Sheets("Weekly Report").Range("J4").Value
+
+      i = i + 1
+
+    End If
+
+  Next a
+  
+  MsgBox ("Data Transfered Successfully!")
+
+  Application.ScreenUpdating = True
+
+End Sub
+
+Sub Button1_Click()
+
+  UserForm1.Show
+
+End Sub
+
+
+
+
